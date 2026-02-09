@@ -1,5 +1,5 @@
 {
-  "name": "chatgpt_to_mdx",
+  "name": "chat2md",
   "version": "0.1.0",
   "private": true,
   "scripts": {

@@ -92,7 +92,7 @@ export default function Home() {
               <p className="text-xs text-slate-400 font-medium">Export Converter</p>
             </div>
           </div>
-          <a href="https://github.com/dedkola/chatgpt_to_mdx" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-white transition-colors">
+          <a href="https://github.com/dedkola/chat2MD" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-white transition-colors">
             <Github className="w-5 h-5" />
           </a>
         </header>

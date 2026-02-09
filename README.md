@@ -11,7 +11,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 [![Deploy to Cloudflare](https://img.shields.io/badge/Deploy-Cloudflare-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://pages.cloudflare.com/)
-[![Deploy with Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/new/clone?repository-url=https://github.com/dedkola/chatgpt_to_mdx)
+[![Deploy with Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/new/clone?repository-url=https://github.com/dedkola/chat2MD)
 
 </div>
 
@@ -57,8 +57,8 @@ A beautiful, modern web application that converts your exported ChatGPT and Clau
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/dedkola/chatgpt_to_mdx.git
-cd chatgpt_to_mdx
+git clone https://github.com/dedkola/chat2MD.git
+cd chat2MD
 ```
 
 2. Install dependencies:
@@ -181,7 +181,7 @@ npm run deploy
 
 Can also be deployed to Vercel with one click:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/dedkola/chatgpt_to_mdx)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/dedkola/chat2MD)
 
 ## 🤝 Contributing
 
@@ -205,7 +205,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 📧 Support
 
-If you have any questions or run into issues, please [open an issue](https://github.com/dedkola/chatgpt_to_mdx/issues) on GitHub.
+If you have any questions or run into issues, please [open an issue](https://github.com/dedkola/chat2MD/issues) on GitHub.
 
 
 ---
