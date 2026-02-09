@@ -1,348 +1,204 @@
-'use client'
+'use client';
+
 import React, { useState } from 'react';
-import { Download, Upload, FileText, Check } from 'lucide-react';
-import JSZip from 'jszip';
+import { Dropzone } from '@/components/Dropzone';
+import { OptionsPanel } from '@/components/OptionsPanel';
+import { ConversationList } from '@/components/ConversationList';
+import { Conversation, ChatSource, ConversionOptions } from '@/types';
+import { parseFile, generateFiles } from '@/services/converterService';
+import { Bot, FileDown, RefreshCw, Zap, Download, Github } from 'lucide-react';
 
-interface Message {
-  author?: {
-    role: string;
-  };
-  content: {
-    parts: string[];
-  };
-  create_time?: number;
-}
-
-interface ConversationNode {
-  message?: Message;
-}
-
-interface Conversation {
-  id: string;
-  title?: string;
-  create_time?: number;
-  mapping?: { [key: string]: ConversationNode };
-}
-
-export default function ChatGPTToMDX() {
+export default function Home() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [filter, setFilter] = useState('');
-  const [format, setFormat] = useState<'mdx' | 'md'>('mdx');
+  const [source, setSource] = useState<ChatSource | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isConverting, setIsConverting] = useState(false);
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const [options, setOptions] = useState<ConversionOptions>({
+    format: 'md',
+    includeFrontmatter: true,
+    separateFiles: true,
+    addTimestamps: false,
+  });
 
+  const handleFileLoaded = async (file: File) => {
+    setIsLoading(true);
     try {
-      const text = await file.text();
-      const data = JSON.parse(text);
-      
-      // ChatGPT export structure varies, handle both formats
-      const convos = Array.isArray(data) ? data : (data.conversations || []);
-      setConversations(convos);
-      setSelected(new Set());
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-      alert('Error parsing JSON file: ' + errorMessage);
+      // Artificial delay for slick feeling if file is too small
+      const start = Date.now();
+      const result = await parseFile(file);
+      const elapsed = Date.now() - start;
+      if (elapsed < 600) await new Promise(r => setTimeout(r, 600 - elapsed));
+
+      setConversations(result.conversations);
+      setSource(result.source);
+    } catch (error) {
+      console.error(error);
+      alert('Failed to parse file. Ensure it is a valid JSON export.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const convertToMDX = (convo: Conversation) => {
-    const title = convo.title || 'Untitled Conversation';
-    const date = convo.create_time 
-      ? new Date(convo.create_time * 1000).toISOString()
-      : new Date().toISOString();
-    
-    let mdx = `---
-title: "${title.replace(/"/g, '\\"')}"
-date: "${date}"
-id: "${convo.id || ''}"
----
+  const handleDownload = async () => {
+    if (conversations.length === 0) return;
+    setIsConverting(true);
 
-# ${title}
-
-`;
-
-    // Handle mapping structure
-    const mapping = convo.mapping || {};
-    const nodes = Object.values(mapping || {}).filter((node): node is ConversationNode & { message: Message } => {
-      if (!node.message) return false;
-      if (!node.message.content) return false;
-      return Array.isArray(node.message.content.parts);
-    });
-
-    // Sort by create_time if available
-    nodes.sort((a, b) => {
-      const timeA = a.message?.create_time || 0;
-      const timeB = b.message?.create_time || 0;
-      return timeA - timeB;
-    });
-
-    nodes.forEach(node => {
-      if (!node.message) return;
-      const role = node.message.author?.role || 'unknown';
-      const parts = node.message.content.parts;
-      const text = parts.join('\n\n');
-
-      if (!text.trim()) return;
-
-      if (role === 'user') {
-        mdx += `## User\n\n${text}\n\n`;
-      } else if (role === 'assistant') {
-        mdx += `## Assistant\n\n${text}\n\n`;
-      } else if (role === 'system') {
-        mdx += `## System\n\n${text}\n\n`;
-      }
-    });
-
-    return mdx;
-  };
-
-  const convertToMD = (convo: Conversation) => {
-    const title = convo.title || 'Untitled Conversation';
-    const date = convo.create_time 
-      ? new Date(convo.create_time * 1000).toISOString()
-      : new Date().toISOString();
-    
-    let md = `# ${title}\n\n`;
-    md += `**Date:** ${date}\n`;
-    md += `**ID:** ${convo.id || ''}\n\n`;
-    md += `---\n\n`;
-
-    // Handle mapping structure
-    const mapping = convo.mapping || {};
-    const nodes = Object.values(mapping || {}).filter((node): node is ConversationNode & { message: Message } => {
-      if (!node.message) return false;
-      if (!node.message.content) return false;
-      return Array.isArray(node.message.content.parts);
-    });
-
-    // Sort by create_time if available
-    nodes.sort((a, b) => {
-      const timeA = a.message?.create_time || 0;
-      const timeB = b.message?.create_time || 0;
-      return timeA - timeB;
-    });
-
-    nodes.forEach(node => {
-      if (!node.message) return;
-      const role = node.message.author?.role || 'unknown';
-      const parts = node.message.content.parts;
-      const text = parts.join('\n\n');
-
-      if (!text.trim()) return;
-
-      if (role === 'user') {
-        md += `## User\n\n${text}\n\n`;
-      } else if (role === 'assistant') {
-        md += `## Assistant\n\n${text}\n\n`;
-      } else if (role === 'system') {
-        md += `## System\n\n${text}\n\n`;
-      }
-    });
-
-    return md;
-  };
-
-  const downloadFile = (convo: Conversation) => {
-    const content = format === 'mdx' ? convertToMDX(convo) : convertToMD(convo);
-    const extension = format === 'mdx' ? 'mdx' : 'md';
-    const filename = `${(convo.title || 'conversation').replace(/[^a-z0-9]/gi, '-').toLowerCase()}.${extension}`;
-    
-    const blob = new Blob([content], { type: 'text/markdown' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const downloadSelected = async () => {
-    if (selected.size === 0) return;
-    
-    const selectedConvos = conversations.filter(c => selected.has(c.id));
-    const extension = format === 'mdx' ? 'mdx' : 'md';
-    
-    if (selected.size === 1) {
-      downloadFile(selectedConvos[0]);
-    } else {
-      // Create a zip file containing all selected files
-      const zip = new JSZip();
-      
-      selectedConvos.forEach((convo) => {
-        const content = format === 'mdx' ? convertToMDX(convo) : convertToMD(convo);
-        const filename = `${(convo.title || 'conversation').replace(/[^a-z0-9]/gi, '-').toLowerCase()}.${extension}`;
-        zip.file(filename, content);
-      });
-      
-      // Generate and download the zip file
-      const blob = await zip.generateAsync({ type: 'blob' });
+    try {
+      const blob = await generateFiles(conversations, options);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'conversations.zip';
+      a.download = `chat-export-${source || 'converted'}.zip`;
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
       URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error(error);
+      alert('Error generating zip file.');
+    } finally {
+      setIsConverting(false);
     }
   };
 
-  const toggleSelect = (id: string) => {
-    const newSelected = new Set(selected);
-    if (newSelected.has(id)) {
-      newSelected.delete(id);
-    } else {
-      newSelected.add(id);
-    }
-    setSelected(newSelected);
+  const reset = () => {
+    setConversations([]);
+    setSource(null);
   };
-
-  const toggleAll = () => {
-    if (selected.size === filteredConvos.length) {
-      setSelected(new Set());
-    } else {
-      setSelected(new Set(filteredConvos.map(c => c.id)));
-    }
-  };
-
-  const filteredConvos = conversations.filter(c => 
-    !filter || c.title?.toLowerCase().includes(filter.toLowerCase())
-  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
-      <div className="max-w-5xl mx-auto">
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-3">
-            <FileText className="text-indigo-600" />
-            ChatGPT logs in JSON convert to MDX/MD files
-          </h1>
-          <p className="text-gray-600 mb-6">
-            Upload your ChatGPT export JSON and convert conversations to MDX or MD format
-          </p>
+    <div className="min-h-screen bg-slate-950 text-slate-200 selection:bg-indigo-500/30 selection:text-indigo-200 font-sans relative overflow-hidden">
 
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Output Format
-            </label>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="format"
-                  value="mdx"
-                  checked={format === 'mdx'}
-                  onChange={(e) => setFormat(e.target.value as 'mdx' | 'md')}
-                  className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
-                />
-                <span className="text-gray-700">MDX (with frontmatter)</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="format"
-                  value="md"
-                  checked={format === 'md'}
-                  onChange={(e) => setFormat(e.target.value as 'mdx' | 'md')}
-                  className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
-                />
-                <span className="text-gray-700">MD (standard markdown)</span>
-              </label>
+      {/* Background Decor */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/10 rounded-full blur-[120px] animate-blob"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 rounded-full blur-[120px] animate-blob animation-delay-2000"></div>
+        <div className="absolute top-[20%] right-[20%] w-[20%] h-[20%] bg-pink-500/5 rounded-full blur-[80px]"></div>
+        {/* Grid pattern overlay */}
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+      </div>
+
+      <div className="relative z-10 container mx-auto px-4 py-12 max-w-5xl flex flex-col min-h-screen">
+
+        {/* Header */}
+        <header className="flex items-center justify-between mb-16">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20 ring-1 ring-white/20">
+              <Bot className="text-white w-6 h-6" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-white">Chat2MD</h1>
+              <p className="text-xs text-slate-400 font-medium">Export Converter</p>
             </div>
           </div>
+          <a href="https://github.com/dedkola/chatgpt_to_mdx" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-white transition-colors">
+            <Github className="w-5 h-5" />
+          </a>
+        </header>
 
-          <label className="flex items-center justify-center gap-3 px-6 py-4 bg-indigo-600 text-white rounded-lg cursor-pointer hover:bg-indigo-700 transition-colors">
-            <Upload size={20} />
-            <span className="font-medium">Upload conversations.json</span>
-            <input 
-              type="file" 
-              accept=".json"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-          </label>
-        </div>
+        {/* Main Content */}
+        <main className="flex-grow flex flex-col items-center justify-center w-full">
 
-        {conversations.length > 0 && (
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-4 flex-1">
-                <input
-                  type="text"
-                  placeholder="Filter conversations..."
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-                <button
-                  onClick={toggleAll}
-                  className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  {selected.size === filteredConvos.length ? 'Deselect All' : 'Select All'}
-                </button>
+          {conversations.length === 0 ? (
+            <div className="w-full flex flex-col items-center animate-fade-in-up">
+              <div className="text-center mb-10 max-w-xl">
+                <h2 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400 mb-6">
+                  Transform your AI chats into standard Markdown.
+                </h2>
+                <p className="text-lg text-slate-400 leading-relaxed">
+                  Backup, read, or publish your ChatGPT and Claude histories.
+                  Privacy-focused: Your data never leaves your browser.
+                </p>
               </div>
-              
-              {selected.size > 0 && (
-                <button
-                  onClick={downloadSelected}
-                  className="ml-4 flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                >
-                  <Download size={18} />
-                  Download {selected.size} {format.toUpperCase()} {selected.size === 1 ? 'file' : 'files'}
-                </button>
-              )}
+
+              <div className="w-full">
+                <Dropzone onFileLoaded={handleFileLoaded} isLoading={isLoading} />
+              </div>
+
+              {/* Feature Pills */}
+              <div className="mt-12 flex flex-wrap justify-center gap-4 text-sm text-slate-500">
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/50 border border-slate-800">
+                  <Zap className="w-4 h-4 text-yellow-500" />
+                  <span>Instant Local Processing</span>
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/50 border border-slate-800">
+                  <FileDown className="w-4 h-4 text-blue-500" />
+                  <span>Supports MD & MDX</span>
+                </div>
+              </div>
             </div>
+          ) : (
+            <div className="w-full space-y-8 animate-fade-in">
+              {/* Toolbar */}
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                    {source === 'chatgpt' ? 'ChatGPT Export' : source === 'claude' ? 'Claude Export' : 'Unknown Export'}
+                    <span className="text-xs font-normal px-2 py-1 rounded-md bg-slate-800 text-slate-400 border border-slate-700">
+                      {conversations.length} chats
+                    </span>
+                  </h2>
+                  <p className="text-slate-400 text-sm mt-1">Ready to convert.</p>
+                </div>
 
-            <div className="text-sm text-gray-600 mb-4">
-              Found {conversations.length} conversation{conversations.length !== 1 ? 's' : ''}
-              {filter && ` (${filteredConvos.length} matching)`}
-            </div>
-
-            <div className="space-y-2 max-h-96 overflow-y-auto">
-              {filteredConvos.map((convo) => (
-                <div
-                  key={convo.id}
-                  className={`flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition-all ${
-                    selected.has(convo.id)
-                      ? 'border-indigo-600 bg-indigo-50'
-                      : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50'
-                  }`}
-                  onClick={() => toggleSelect(convo.id)}
-                >
-                  <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                    selected.has(convo.id)
-                      ? 'border-indigo-600 bg-indigo-600'
-                      : 'border-gray-300'
-                  }`}>
-                    {selected.has(convo.id) && <Check size={14} className="text-white" />}
-                  </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium text-gray-800 truncate">
-                      {convo.title || 'Untitled Conversation'}
-                    </div>
-                    {convo.create_time && (
-                      <div className="text-sm text-gray-500">
-                        {new Date(convo.create_time * 1000).toLocaleDateString()}
-                      </div>
-                    )}
-                  </div>
-
+                <div className="flex items-center gap-3">
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      downloadFile(convo);
-                    }}
-                    className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100 transition-colors flex-shrink-0"
+                    onClick={reset}
+                    className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+                    title="Reset"
                   >
-                    Export
+                    <RefreshCw className="w-5 h-5" />
                   </button>
                 </div>
-              ))}
+              </div>
+
+              {/* Options & List Grid */}
+              <div className="grid lg:grid-cols-3 gap-8">
+                {/* Left Column: Settings */}
+                <div className="lg:col-span-1 space-y-6">
+                  <OptionsPanel options={options} setOptions={setOptions} />
+
+                  <button
+                    onClick={handleDownload}
+                    disabled={isConverting}
+                    className={`
+                      w-full py-4 rounded-xl font-bold text-lg shadow-lg
+                      flex items-center justify-center gap-3
+                      transition-all duration-300
+                      ${isConverting
+                        ? 'bg-slate-700 cursor-wait text-slate-400'
+                        : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white hover:shadow-indigo-500/25 active:scale-[0.98]'
+                      }
+                    `}
+                  >
+                    {isConverting ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-5 h-5" />
+                        Download Zip
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Right Column: Preview List */}
+                <div className="lg:col-span-2">
+                  <ConversationList conversations={conversations} />
+                </div>
+              </div>
+
             </div>
-          </div>
-        )}
+          )}
+        </main>
+
+        <footer className="mt-16 py-6 border-t border-slate-800/50 text-center text-slate-600 text-sm">
+          <p>© {new Date().getFullYear()} Chat2MD. Runs entirely in your browser.</p>
+        </footer>
       </div>
     </div>
   );
