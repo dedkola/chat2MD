@@ -1,6 +1,6 @@
 import React from 'react';
 import { ConversionOptions } from '../types';
-import { Settings, FileText, Calendar, LayoutTemplate } from 'lucide-react';
+import { Settings, Calendar, LayoutTemplate } from 'lucide-react';
 
 interface OptionsPanelProps {
     options: ConversionOptions;

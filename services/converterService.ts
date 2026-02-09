@@ -2,7 +2,7 @@ import { Conversation, Message, ChatGPTConversation, ClaudeConversation, ChatSou
 import JSZip from 'jszip';
 
 // --- Detect Source ---
-export const detectSource = (json: any): ChatSource => {
+export const detectSource = (json: unknown): ChatSource => {
     if (Array.isArray(json) && json.length > 0) {
         if (json[0].mapping && json[0].current_node) return 'chatgpt';
         if (json[0].chat_messages && json[0].uuid) return 'claude';
@@ -26,7 +26,7 @@ const parseChatGPT = (data: ChatGPTConversation[]): Conversation[] => {
                 const textContent = node.message.content.parts.join('\n');
                 if (textContent.trim()) {
                     messages.unshift({
-                        role: (node.message.author.role as any) || 'system',
+                        role: (node.message.author.role as Message['role']) || 'system',
                         content: textContent,
                         date: node.message.create_time ? new Date(node.message.create_time * 1000).toISOString() : undefined
                     });
@@ -87,7 +87,7 @@ export const parseFile = async (file: File): Promise<{ conversations: Conversati
 
 // --- Markdown Generators ---
 
-const generateFrontmatter = (c: Conversation, format: 'md' | 'mdx'): string => {
+const generateFrontmatter = (c: Conversation): string => {
     const dateStr = c.createTime ? new Date(c.createTime).toISOString().split('T')[0] : 'unknown';
     // Escape quotes in title
     const safeTitle = c.title.replace(/"/g, '\\"');
@@ -115,7 +115,7 @@ export const generateFiles = async (conversations: Conversation[], options: Conv
         let fileContent = '';
 
         if (options.includeFrontmatter) {
-            fileContent += generateFrontmatter(conv, options.format);
+            fileContent += generateFrontmatter(conv);
         } else {
             fileContent += `# ${conv.title}\n\n`;
         }

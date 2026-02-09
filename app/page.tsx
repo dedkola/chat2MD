@@ -83,15 +83,15 @@ export default function Home() {
 
         {/* Header */}
         <header className="flex items-center justify-between mb-16">
-          <div className="flex items-center gap-3">
+          <button onClick={reset} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20 ring-1 ring-white/20">
               <Bot className="text-white w-6 h-6" />
             </div>
-            <div>
+            <div className="text-left">
               <h1 className="text-2xl font-bold tracking-tight text-white">Chat2MD</h1>
               <p className="text-xs text-slate-400 font-medium">Export Converter</p>
             </div>
-          </div>
+          </button>
           <a href="https://github.com/dedkola/chat2MD" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-white transition-colors">
             <Github className="w-5 h-5" />
           </a>
