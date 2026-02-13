@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat2md
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat2md
+  template:
+    metadata:
+      labels:
+        app: chat2md
+    spec:
+      containers:
+        - name: chat2md
+          image: ghcr.io/dedkola/chat2md:latest
+          ports:
+            - containerPort: 3000
