@@ -1,12 +1,12 @@
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: chat2md
   namespace: flux-system
 spec:
   interval: 5m
-  path: "./k8s" # path in your repo to Deployment + Service + Ingress
+  path: "./k8s"
   prune: true
   sourceRef:
     kind: GitRepository
-    name: flux-system # THIS MUST MATCH the GitRepository in flux-system namespace
+    name: flux-system
