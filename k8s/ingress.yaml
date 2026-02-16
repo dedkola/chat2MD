@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: chat2md
+  annotations:
+    kubernetes.io/ingress.class: "nginx" # for k3s
+spec:
+  rules:
+    - host: chat2md.tk.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: chat2md
+                port:
+                  number: 80
