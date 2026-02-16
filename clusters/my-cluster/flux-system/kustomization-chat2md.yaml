@@ -5,8 +5,8 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m
-  path: "./k8s"
+  path: "./k8s" # path in your repo to Deployment + Service + Ingress
   prune: true
   sourceRef:
     kind: GitRepository
-    name: chat2MD
+    name: flux-system # THIS MUST MATCH the GitRepository in flux-system namespace
