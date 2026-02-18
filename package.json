@@ -29,5 +29,9 @@
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "wrangler": "^4.66.0"
+  },
+  "overrides": {
+    "fast-xml-parser": ">=5.3.6 <6.0.0"
   }
+
 }
