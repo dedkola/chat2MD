@@ -4,3 +4,4 @@ resources:
   - flux-system/gotk-components.yaml
   - flux-system/gotk-sync.yaml
   - flux-system/kustomization-chat2md.yaml
+  - flux-system/gitrepository-chat2md.yaml
