@@ -12,7 +12,7 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
-    "@opennextjs/cloudflare": "^1.16.5",
+    "@opennextjs/cloudflare": "^1.17.1",
     "jszip": "^3.10.1",
     "lucide-react": "^0.574.0",
     "next": "16.1.6",
