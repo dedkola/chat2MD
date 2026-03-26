@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: chat2md
-          image: ghcr.io/dedkola/chat2md:d2d3226
+          image: ghcr.io/dedkola/chat2md:d1e0528
           ports:
             - containerPort: 3000
