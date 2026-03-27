@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: chat2md
-          image: ghcr.io/dedkola/chat2md:20260327125413-7eb49e9 # {"$imagepolicy": "flux-system:chat2md"}
+          image: ghcr.io/dedkola/chat2md:20260327125858-945bd26 # {"$imagepolicy": "flux-system:chat2md"}
           ports:
             - containerPort: 3000
