@@ -6,7 +6,7 @@ import { OptionsPanel } from '@/components/OptionsPanel';
 import { ConversationList } from '@/components/ConversationList';
 import { Conversation, ChatSource, ConversionOptions } from '@/types';
 import { parseFile, generateFiles } from '@/services/converterService';
-import { Bot, FileDown, RefreshCw, Zap, Download, Github } from 'lucide-react';
+import { Bot, FileDown, RefreshCw, Zap, Download, GitBranch } from 'lucide-react';
 
 export default function Home() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -93,7 +93,7 @@ export default function Home() {
             </div>
           </button>
           <a href="https://github.com/dedkola/chat2MD" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-white transition-colors">
-            <Github className="w-5 h-5" />
+            <GitBranch className="w-5 h-5" />
           </a>
         </header>
 
