@@ -27,7 +27,7 @@
     "eslint": "^9.39.4",
     "eslint-config-next": "16.2.5",
     "tailwindcss": "^4.2.2",
-    "typescript": "^6.0.2",
+    "typescript": "^6.0.3",
     "wrangler": "^4.88.0"
   },
   "overrides": {
