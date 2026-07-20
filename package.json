@@ -2,7 +2,7 @@
   "name": "chat2md",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10.34.5",
+  "packageManager": "pnpm@11.15.1",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -17,15 +17,15 @@
     "jszip": "^3.10.1",
     "lucide-react": "^1.25.0",
     "next": "16.2.10",
-    "react": "19.2.6",
+    "react": "19.2.7",
     "react-dom": "19.2.6"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.1.1",
-    "@types/react": "^19.2.14",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "eslint": "^9.39.4",
+    "eslint": "^10.0.0",
     "eslint-config-next": "16.2.10",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
