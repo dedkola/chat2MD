@@ -10,8 +10,7 @@
 [![TailwindCSS](https://img.shields.io/badge/Tailwind-4.x-38bdf8?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-[![Deploy to Cloudflare](https://img.shields.io/badge/Deploy-Cloudflare-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://pages.cloudflare.com/)
-[![Deploy with Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/new/clone?repository-url=https://github.com/dedkola/chat2MD)
+[![Deploy to Cloudflare Workers](https://img.shields.io/badge/Deploy-Cloudflare%20Workers-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
 
 </div>
 
@@ -42,15 +41,15 @@ A beautiful, modern web application that converts your exported ChatGPT and Clau
 - 🎨 **Beautiful UI** - Clean, modern interface with Tailwind CSS
 - ⚡ **Lightning Fast** - Built with Next.js 16 and React 19
 - 📦 **ZIP Export** - Download multiple conversations at once
-- 🌐 **Easy Deploy** - Deploy to Cloudflare Pages or Vercel with ease
+- 🌐 **Easy Deploy** - Deploy to Cloudflare Workers with OpenNext
 - 📝 **Obsidian Ready** - Perfect for note-taking and knowledge management
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js 18.x or higher
-- npm or yarn
+- Node.js 22.x or higher
+- pnpm 11.x (the pinned package manager for this repository)
 
 ### Installation
 
@@ -64,13 +63,13 @@ cd chat2MD
 2. Install dependencies:
 
 ```bash
-npm install
+pnpm install --frozen-lockfile
 ```
 
 3. Run the development server:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser
@@ -153,35 +152,40 @@ AI response here...
 
 ```bash
 # Development
-npm run dev          # Start development server
+pnpm run dev         # Start development server
 
 # Production
-npm run build        # Build for production
-npm run start        # Start production server
+pnpm run build       # Build the standard Next.js app
+pnpm run start       # Run the standard Next.js production server
 
 # Linting
-npm run lint         # Run ESLint
+pnpm run lint        # Run ESLint
 
-# Cloudflare Deployment
-npm run preview      # Preview Cloudflare build
-npm run deploy       # Deploy to Cloudflare Pages
+# Cloudflare Workers
+pnpm run preview     # Build and preview in the Workers runtime
+pnpm run deploy      # Build and deploy to Cloudflare Workers
+pnpm run upload      # Upload a Worker version without routing traffic
+pnpm run cf-typegen  # Refresh Cloudflare binding types
 ```
 
 ## 🌍 Deployment
 
-### Cloudflare Pages
+### Cloudflare Workers
 
-This project is optimized for Cloudflare Pages deployment:
+This project uses the OpenNext adapter to deploy Next.js to Cloudflare Workers.
+The first deployment creates the `chat2md` Worker and its `*.workers.dev`
+subdomain. Authenticate once, then deploy:
 
 ```bash
-npm run deploy
+pnpm wrangler login
+pnpm run preview
+pnpm run deploy
 ```
 
-### Vercel
-
-Can also be deployed to Vercel with one click:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/dedkola/chat2MD)
+For Cloudflare Workers Builds, connect this repository, set the production
+branch to `main`, and use `pnpm run deploy` as the deploy command. This app
+does not require any Worker secrets or bindings. Add build variables in
+Cloudflare before introducing server-side environment variables.
 
 ## 🤝 Contributing
 
