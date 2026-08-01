@@ -182,10 +182,23 @@ pnpm run preview
 pnpm run deploy
 ```
 
-For Cloudflare Workers Builds, connect this repository, set the production
-branch to `main`, and use `pnpm run deploy` as the deploy command. This app
-does not require any Worker secrets or bindings. Add build variables in
-Cloudflare before introducing server-side environment variables.
+For Cloudflare Workers Builds, connect this repository and set the production
+branch to `main`. Because this project uses the OpenNext adapter, the build
+and deploy commands must run the OpenNext CLI (not the generic Next.js build
+or `wrangler deploy` defaults):
+
+| Setting | Command |
+|---|---|
+| Build command | `pnpm exec opennextjs-cloudflare build` |
+| Deploy command | `pnpm exec opennextjs-cloudflare deploy` |
+| Non-production branch deploy command | `pnpm exec opennextjs-cloudflare upload` |
+
+Using the default `npx wrangler deploy` as the deploy command will fail because
+wrangler auto-detects the OpenNext project but the build step has not produced
+the `.open-next` output it expects.
+
+This app does not require any Worker secrets or bindings. Add build variables
+in Cloudflare before introducing server-side environment variables.
 
 ## 🤝 Contributing
 
