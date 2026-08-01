@@ -4,7 +4,7 @@ overrides:
   fast-xml-parser: ">=5.7.0"
 
 allowBuilds:
-  esbuild: false
-  sharp: false
-  unrs-resolver: false
-  workerd: false
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+  workerd: true
