@@ -30,7 +30,7 @@
     "eslint-config-next": "16.3.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
-    "wrangler": "^4.115.0"
+    "wrangler": "^4.121.0"
   },
   "overrides": {
     "fast-xml-parser": ">=5.7.0"
