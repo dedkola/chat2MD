@@ -1,18 +1,22 @@
-FROM node:24-alpine AS deps
+FROM node:24-bookworm-slim AS base
+RUN apt-get update && apt-get install -y --no-install-recommends libc++1 \
+    && rm -rf /var/lib/apt/lists/*
+
+FROM base AS deps
 WORKDIR /app
-COPY package.json package-lock.json* pnpm-lock.yaml* ./
+COPY package.json package-lock.json* pnpm-lock.yaml* pnpm-workspace.yaml ./
 RUN corepack enable
 RUN if [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; \
     elif [ -f package-lock.json ]; then npm ci; \
     else npm install; fi
 
-FROM node:24-alpine AS builder
+FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
 
-FROM node:24-alpine AS runner
+FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder /app/public ./public
