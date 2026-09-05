@@ -14,7 +14,7 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
-    "@opennextjs/cloudflare": "1.20.2",
+    "@opennextjs/cloudflare": "1.20.5",
     "jszip": "^3.10.1",
     "lucide-react": "^1.39.0",
     "next": "16.3.3",
