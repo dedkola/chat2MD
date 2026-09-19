@@ -15,7 +15,7 @@ importers:
     dependencies:
       '@opennextjs/cloudflare':
         specifier: 1.20.6
-        version: 1.20.6(next@16.3.4(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@26.5.0)(react-dom@19.2.8(react@19.3.0))(react@19.3.0))(supports-color@10.2.2)(wrangler@4.130.0)
+        version: 1.20.6(next@16.3.4(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@26.6.1)(react-dom@19.2.8(react@19.3.0))(react@19.3.0))(supports-color@10.2.2)(wrangler@4.130.0)
       jszip:
         specifier: ^3.10.2
         version: 3.10.2
@@ -24,7 +24,7 @@ importers:
         version: 1.43.0(react@19.3.0)
       next:
         specifier: 16.3.4
-        version: 16.3.4(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@26.5.0)(react-dom@19.2.8(react@19.3.0))(react@19.3.0)
+        version: 16.3.4(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@26.6.1)(react-dom@19.2.8(react@19.3.0))(react@19.3.0)
       react:
         specifier: 19.3.0
         version: 19.3.0
@@ -36,8 +36,8 @@ importers:
         specifier: ^4.3.3
         version: 4.3.3
       '@types/node':
-        specifier: ^26.5.0
-        version: 26.5.0
+        specifier: ^26.6.1
+        version: 26.6.1
       '@types/react':
         specifier: ^19.3.0
         version: 19.3.0
@@ -1581,8 +1581,8 @@ packages:
   '@types/node@18.19.130':
     resolution: {integrity: sha512-GRaXQx6jGfL8sKfaIDD6OupbIHBr9jv7Jnaml9tB7l4v068PAOXqfcujMMo5PhbIs6ggR1XODELqahT2R8v0fg==}
 
-  '@types/node@26.5.0':
-    resolution: {integrity: sha512-dVSGpriSoCgz8WnDNTuSSuSv1PC/ALXihO4ulRZt7Md8k9mlbdin3lGOcDE8SnWOgf513ByWlXd7BK4azmyg/A==}
+  '@types/node@26.6.1':
+    resolution: {integrity: sha512-VqGJBMCtdhqkBUCcBLvywI0NJ+KLuVzgNnlBUNFOQjqVxzo2lxLUNg1DSey8+u2u6ktswSAxg+s68QLzWHNOuA==}
 
   '@types/react-dom@19.2.7':
     resolution: {integrity: sha512-I8bPpDLcHBv1qiIiXDCy71Rt8eQDKJP0sMSWJphDdAcdqiJ1sGpZamavoEIRZmYzjia9LuEb2HlYdDpmoENpvQ==}
@@ -4903,7 +4903,7 @@ snapshots:
 
   '@nolyfill/is-core-module@1.0.39': {}
 
-  '@opennextjs/aws@4.1.4(next@16.3.4(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@26.5.0)(react-dom@19.2.8(react@19.3.0))(react@19.3.0))(supports-color@10.2.2)':
+  '@opennextjs/aws@4.1.4(next@16.3.4(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@26.6.1)(react-dom@19.2.8(react@19.3.0))(react@19.3.0))(supports-color@10.2.2)':
     dependencies:
       '@ast-grep/napi': 0.40.5
       '@aws-sdk/client-cloudfront': 3.984.0
@@ -4919,24 +4919,24 @@ snapshots:
       cookie: 1.1.1
       esbuild: 0.25.4
       express: 5.2.1(supports-color@10.2.2)
-      next: 16.3.4(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@26.5.0)(react-dom@19.2.8(react@19.3.0))(react@19.3.0)
+      next: 16.3.4(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@26.6.1)(react-dom@19.2.8(react@19.3.0))(react@19.3.0)
       path-to-regexp: 6.3.0
       urlpattern-polyfill: 10.1.0
       yaml: 2.9.0
     transitivePeerDependencies:
       - supports-color
 
-  '@opennextjs/cloudflare@1.20.6(next@16.3.4(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@26.5.0)(react-dom@19.2.8(react@19.3.0))(react@19.3.0))(supports-color@10.2.2)(wrangler@4.130.0)':
+  '@opennextjs/cloudflare@1.20.6(next@16.3.4(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@26.6.1)(react-dom@19.2.8(react@19.3.0))(react@19.3.0))(supports-color@10.2.2)(wrangler@4.130.0)':
     dependencies:
       '@ast-grep/napi': 0.40.5
       '@dotenvx/dotenvx': 1.31.0
-      '@opennextjs/aws': 4.1.4(next@16.3.4(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@26.5.0)(react-dom@19.2.8(react@19.3.0))(react@19.3.0))(supports-color@10.2.2)
+      '@opennextjs/aws': 4.1.4(next@16.3.4(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@26.6.1)(react-dom@19.2.8(react@19.3.0))(react@19.3.0))(supports-color@10.2.2)
       ci-info: 4.4.0
       cloudflare: 4.5.0
       comment-json: 4.6.2
       enquirer: 2.4.1
       glob: 12.0.0
-      next: 16.3.4(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@26.5.0)(react-dom@19.2.8(react@19.3.0))(react@19.3.0)
+      next: 16.3.4(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@26.6.1)(react-dom@19.2.8(react@19.3.0))(react@19.3.0)
       ts-tqdm: 0.8.6
       wrangler: 4.130.0
       yargs: 18.1.0
@@ -5245,14 +5245,14 @@ snapshots:
 
   '@types/node-fetch@2.6.13':
     dependencies:
-      '@types/node': 26.5.0
+      '@types/node': 26.6.1
       form-data: 4.0.6
 
   '@types/node@18.19.130':
     dependencies:
       undici-types: 5.26.5
 
-  '@types/node@26.5.0':
+  '@types/node@26.6.1':
     dependencies:
       undici-types: 8.9.0
 
@@ -6797,7 +6797,7 @@ snapshots:
     dependencies:
       content-type: 2.1.0
 
-  next@16.3.4(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@26.5.0)(react-dom@19.2.8(react@19.3.0))(react@19.3.0):
+  next@16.3.4(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@26.6.1)(react-dom@19.2.8(react@19.3.0))(react@19.3.0):
     dependencies:
       '@next/env': 16.3.4
       '@swc/helpers': 0.5.23
@@ -6816,7 +6816,7 @@ snapshots:
       '@next/swc-linux-x64-musl': 16.3.4
       '@next/swc-win32-arm64-msvc': 16.3.4
       '@next/swc-win32-x64-msvc': 16.3.4
-      sharp: 0.35.4(@types/node@26.5.0)
+      sharp: 0.35.4(@types/node@26.6.1)
     transitivePeerDependencies:
       - '@babel/core'
       - '@types/node'
@@ -7186,7 +7186,7 @@ snapshots:
       '@img/sharp-win32-ia32': 0.35.2
       '@img/sharp-win32-x64': 0.35.2
 
-  sharp@0.35.4(@types/node@26.5.0):
+  sharp@0.35.4(@types/node@26.6.1):
     dependencies:
       '@img/colour': 1.1.0
       detect-libc: 2.1.2
@@ -7217,7 +7217,7 @@ snapshots:
       '@img/sharp-win32-arm64': 0.35.4
       '@img/sharp-win32-ia32': 0.35.4
       '@img/sharp-win32-x64': 0.35.4
-      '@types/node': 26.5.0
+      '@types/node': 26.6.1
     optional: true
 
   shebang-command@2.0.0:
