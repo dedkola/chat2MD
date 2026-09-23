@@ -1,4 +1,4 @@
-FROM node:24-bookworm-slim AS base
+FROM node:24.20.0-bookworm-slim AS base
 RUN apt-get update && apt-get install -y --no-install-recommends libc++1 \
     && rm -rf /var/lib/apt/lists/*
 
